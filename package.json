@@ -1,5 +1,5 @@
 {
-  "name": "nebular",
+  "name": "@dragonbane0/nebular",
   "version": "3.5.0",
   "license": "MIT",
   "author": "akveo <contact@akveo.com>",
@@ -12,7 +12,10 @@
     "url": "https://github.com/akveo/nebular/issues"
   },
   "homepage": "https://github.com/akveo/nebular#readme",
-  "repository": "git+https://github.com/akveo/nebular.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dragonbane0/nebular.git"
+  },
   "scripts": {
     "ng": "ng",
     "ngh": "ngh",
@@ -175,5 +178,10 @@
     "uglify-es": "3.2.2",
     "uglifyjs-webpack-plugin": "1.1.5"
   },
-  "schematics": "./schematics/dist/collection.json"
+  "schematics": "./schematics/dist/collection.json",
+  "description": "<a href=\"https://akveo.github.io/nebular/\"><img src=\"https://i.imgur.com/ScNTkCX.png\"></a>",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs"
+  }
 }

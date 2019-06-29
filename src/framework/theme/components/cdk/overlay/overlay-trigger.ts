@@ -239,17 +239,26 @@ export class NbTriggerStrategyBuilderService {
   }
 
   build(): NbTriggerStrategy {
+
+    let targetDocument = (<any>document).getElementsByTagName("ngx-app");
+
+    if (targetDocument && targetDocument.length > 0)
+      targetDocument = targetDocument[0].shadowRoot;
+
+    if (!targetDocument)
+      targetDocument = this._document;
+
     switch (this._trigger) {
       case NbTrigger.CLICK:
-        return new NbClickTriggerStrategy(this._document, this._host, this._container);
+        return new NbClickTriggerStrategy(targetDocument, this._host, this._container);
       case NbTrigger.HINT:
-        return new NbHintTriggerStrategy(this._document, this._host, this._container);
+        return new NbHintTriggerStrategy(targetDocument, this._host, this._container);
       case NbTrigger.HOVER:
-        return new NbHoverTriggerStrategy(this._document, this._host, this._container);
+        return new NbHoverTriggerStrategy(targetDocument, this._host, this._container);
       case NbTrigger.FOCUS:
-        return new NbFocusTriggerStrategy(this._document, this._host, this._container);
+        return new NbFocusTriggerStrategy(targetDocument, this._host, this._container);
       case NbTrigger.NOOP:
-        return new NbNoopTriggerStrategy(this._document, this._host, this._container);
+        return new NbNoopTriggerStrategy(targetDocument, this._host, this._container);
       default:
         throw new Error('Trigger have to be provided');
     }
