@@ -240,13 +240,15 @@ export class NbTriggerStrategyBuilderService {
 
   build(): NbTriggerStrategy {
 
-    let targetDocument = (<any>document).getElementsByTagName("ngx-app");
+    let targetDocument = (<any>document).getElementsByTagName('ngx-app');
 
-    if (targetDocument && targetDocument.length > 0)
+    if (targetDocument && targetDocument.length > 0) {
       targetDocument = targetDocument[0].shadowRoot;
+    }
 
-    if (!targetDocument)
+    if (!targetDocument) {
       targetDocument = this._document;
+    }
 
     switch (this._trigger) {
       case NbTrigger.CLICK:
