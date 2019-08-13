@@ -330,9 +330,19 @@ export class NbLayoutComponent implements AfterViewInit, OnDestroy {
   set withScroll(val: boolean) {
     this.withScrollValue = convertToBoolProperty(val);
 
+    let targetDocument = this.document.getElementsByTagName('ngx-app');
+
+    if (targetDocument && targetDocument.length > 0) {
+      targetDocument = targetDocument[0].shadowRoot;
+    }
+
+    if (!targetDocument) {
+      targetDocument = this.document;
+    }
+
     // TODO: is this the best way of doing it? as we don't have access to body from theme styles
     // TODO: add e2e test
-    const body = this.document.getElementsByTagName('body')[0];
+    const body = targetDocument.getElementsByTagName('body')[0];
     if (this.withScrollValue) {
       this.renderer.setStyle(body, 'overflow', 'hidden');
     } else {
@@ -377,7 +387,18 @@ export class NbLayoutComponent implements AfterViewInit, OnDestroy {
         takeWhile(() => this.alive),
       )
       .subscribe((theme: any) => {
-        const body = this.document.getElementsByTagName('body')[0];
+
+        let targetDocument = this.document.getElementsByTagName('ngx-app');
+
+        if (targetDocument && targetDocument.length > 0) {
+            targetDocument = targetDocument[0].shadowRoot;
+        }
+
+        if (!targetDocument) {
+            targetDocument = this.document;
+        }
+
+        const body = targetDocument.getElementsByTagName('body')[0];
         if (theme.previous) {
           this.renderer.removeClass(body, `nb-theme-${theme.previous}`);
         }
