@@ -342,7 +342,7 @@ export class NbLayoutComponent implements AfterViewInit, OnDestroy {
 
     // TODO: is this the best way of doing it? as we don't have access to body from theme styles
     // TODO: add e2e test
-    const body = targetDocument.getElementsByTagName('body')[0];
+    const body = targetDocument.querySelector('body');
     if (this.withScrollValue) {
       this.renderer.setStyle(body, 'overflow', 'hidden');
     } else {
@@ -398,7 +398,7 @@ export class NbLayoutComponent implements AfterViewInit, OnDestroy {
             targetDocument = this.document;
         }
 
-        const body = targetDocument.getElementsByTagName('body')[0];
+        const body = targetDocument.querySelector('body');
         if (theme.previous) {
           this.renderer.removeClass(body, `nb-theme-${theme.previous}`);
         }
