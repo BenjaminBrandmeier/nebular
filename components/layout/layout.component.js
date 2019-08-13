@@ -352,7 +352,14 @@ var NbLayoutComponent = /** @class */ (function () {
         this.themeService.onThemeChange()
             .pipe(takeWhile(function () { return _this.alive; }))
             .subscribe(function (theme) {
-            var body = _this.document.getElementsByTagName('body')[0];
+            var targetDocument = _this.document.getElementsByTagName('ngx-app');
+            if (targetDocument && targetDocument.length > 0) {
+                targetDocument = targetDocument[0].shadowRoot;
+            }
+            if (!targetDocument) {
+                targetDocument = _this.document;
+            }
+            var body = targetDocument.getElementsByTagName('body')[0];
             if (theme.previous) {
                 _this.renderer.removeClass(body, "nb-theme-" + theme.previous);
             }
@@ -452,9 +459,16 @@ var NbLayoutComponent = /** @class */ (function () {
          */
         set: function (val) {
             this.withScrollValue = convertToBoolProperty(val);
+            var targetDocument = this.document.getElementsByTagName('ngx-app');
+            if (targetDocument && targetDocument.length > 0) {
+                targetDocument = targetDocument[0].shadowRoot;
+            }
+            if (!targetDocument) {
+                targetDocument = this.document;
+            }
             // TODO: is this the best way of doing it? as we don't have access to body from theme styles
             // TODO: add e2e test
-            var body = this.document.getElementsByTagName('body')[0];
+            var body = targetDocument.getElementsByTagName('body')[0];
             if (this.withScrollValue) {
                 this.renderer.setStyle(body, 'overflow', 'hidden');
             }
