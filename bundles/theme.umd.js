@@ -6592,7 +6592,7 @@ var NbLayoutComponent = /** @class */ (function () {
             if (!targetDocument) {
                 targetDocument = _this.document;
             }
-            var body = targetDocument.getElementsByTagName('body')[0];
+            var body = targetDocument.querySelector('body');
             if (theme.previous) {
                 _this.renderer.removeClass(body, "nb-theme-" + theme.previous);
             }
@@ -6701,7 +6701,7 @@ var NbLayoutComponent = /** @class */ (function () {
             }
             // TODO: is this the best way of doing it? as we don't have access to body from theme styles
             // TODO: add e2e test
-            var body = targetDocument.getElementsByTagName('body')[0];
+            var body = targetDocument.querySelector('body');
             if (this.withScrollValue) {
                 this.renderer.setStyle(body, 'overflow', 'hidden');
             }
