@@ -3,22 +3,41 @@
  * Copyright Akveo. All Rights Reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
-import { Component, Input, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+  Component,
+  DebugElement,
+  Input,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+  Injectable,
+} from '@angular/core';
+import { Location } from '@angular/common';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TestBed } from '@angular/core/testing';
 import { NbMenuModule } from './menu.module';
 import { NbMenuBag, NbMenuInternalService, NbMenuItem, NbMenuService } from './menu.service';
 import { NbThemeModule } from '../../theme.module';
 import {
-  getFragmentPartOfUrl, isFragmentContain,
+  getFragmentPartOfUrl,
+  isFragmentContain,
   isFragmentEqual,
   isUrlPathContain,
   isUrlPathEqual,
+  getPathPartOfUrl,
 } from './url-matching-helpers';
 import { pairwise, take } from 'rxjs/operators';
 import { NbMenuComponent } from './menu.component';
+import {
+  NbIconComponent,
+  NbIconLibraries,
+  NbLayoutDirection,
+  NbLayoutDirectionService,
+} from '@nebular/theme';
+import { SpyLocation } from '@angular/common/testing';
 
 @Component({ template: '' })
 export class NoopComponent {}
@@ -30,7 +49,7 @@ export class SingleMenuTestComponent {
   constructor (public menuPublicService: NbMenuService) {}
   @Input() items: NbMenuItem[];
   @Input() menuTag: string;
-  @ViewChild(NbMenuComponent) menuComponent: NbMenuComponent;
+  @ViewChild(NbMenuComponent, { static: false }) menuComponent: NbMenuComponent;
 }
 
 @Component({
@@ -48,6 +67,23 @@ export class DoubleMenusTestComponent {
   @ViewChildren(NbMenuComponent) menuComponent: QueryList<NbMenuComponent>;
 }
 
+
+// Overrides SpyLocation path method to take into account `includeHash` parameter.
+// Original SpyLocation ignores parameters and always returns path with hash which is different
+// from Location.
+@Injectable()
+export class SpyLocationPathParameter extends SpyLocation {
+  path(includeHash: boolean = false): string {
+    const path = super.path();
+
+    if (includeHash) {
+      return path;
+    }
+
+    return getPathPartOfUrl(path);
+  }
+}
+
 function createTestBed(routes: Routes = []) {
   TestBed.configureTestingModule({
     imports: [
@@ -59,6 +95,12 @@ function createTestBed(routes: Routes = []) {
     declarations: [SingleMenuTestComponent, DoubleMenusTestComponent, NoopComponent],
     providers: [NbMenuService],
   });
+
+  TestBed.overrideProvider(Location, { useValue: new SpyLocationPathParameter() });
+
+  const iconLibs: NbIconLibraries = TestBed.get(NbIconLibraries);
+  iconLibs.registerSvgPack('test', { 'some-icon': '<svg>some-icon</svg>' });
+  iconLibs.setDefaultPack('test')
 }
 
 function createSingleMenuComponent(menuItems, menuTag = 'menu') {
@@ -97,9 +139,9 @@ describe('NbMenuItem', () => {
   });
 
   it('should set icon to menu item', () => {
-    const { fixture } = createSingleMenuComponent([{ title: 'Home', icon: 'test-icon' }]);
+    const { fixture } = createSingleMenuComponent([{ title: 'Home', icon: 'some-icon' }]);
     const iconWrapper = fixture.nativeElement.querySelector('.menu-icon');
-    expect(iconWrapper.classList).toContain('test-icon');
+    expect(iconWrapper.textContent).toContain('some-icon');
   });
 
   it('should set title to menu item', () => {
@@ -170,6 +212,20 @@ describe('NbMenuItem', () => {
     ]);
     const activeItem = fixture.nativeElement.querySelector('a.active');
     expect(activeItem.querySelector('span').innerHTML).toEqual(selectedItem.title);
+  });
+
+  it('should change arrow direction when document direction changes', () => {
+    const menuItems = [{ title: '', children: [{ title: '' }] }];
+    const { fixture } = createSingleMenuComponent(menuItems);
+    const iconComponent = fixture.debugElement.query(By.directive(NbIconComponent)) as DebugElement;
+    const directionService: NbLayoutDirectionService = TestBed.get(NbLayoutDirectionService);
+
+    expect(iconComponent.componentInstance.icon).toEqual('chevron-left-outline');
+
+    directionService.setDirection(NbLayoutDirection.RTL);
+    fixture.detectChanges();
+
+    expect(iconComponent.componentInstance.icon).toEqual('chevron-right-outline');
   });
 
 });

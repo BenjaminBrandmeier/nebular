@@ -10,6 +10,7 @@ import { Params } from '@angular/router';
 import { Observable, BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { isFragmentContain, isFragmentEqual, isUrlPathContain, isUrlPathEqual } from './url-matching-helpers';
+import { NbIconConfig } from '../icon/icon.component';
 
 export interface NbMenuBag { tag: string; item: NbMenuItem }
 
@@ -49,10 +50,10 @@ export class NbMenuItem {
    */
   url?: string;
   /**
-   * Icon class name
-   * @type {string}
+   * Icon class name or icon config object
+   * @type {string | NbIconConfig}
    */
-  icon?: string;
+  icon?: string | NbIconConfig;
   /**
    * Expanded by default
    * @type {boolean}
@@ -77,7 +78,7 @@ export class NbMenuItem {
    * Item is selected when partly or fully equal to the current url
    * @type {string}
    */
-  pathMatch?: string = 'full';
+  pathMatch?: 'full' | 'prefix' = 'full';
   /**
    * Where this is a home item
    * @type {boolean}
@@ -384,8 +385,8 @@ export class NbMenuInternalService {
 
     if (isSelectedInPath && item.fragment != null) {
       return exact
-        ? isFragmentEqual(this.location.path(), item.fragment)
-        : isFragmentContain(this.location.path(), item.fragment);
+        ? isFragmentEqual(this.location.path(true), item.fragment)
+        : isFragmentContain(this.location.path(true), item.fragment);
     }
 
     return isSelectedInPath;

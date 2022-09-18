@@ -16,7 +16,7 @@ import { convertToBoolProperty } from '../helpers';
  *  {
  *    title: 'Route tab #1',
  *    route: '/pages/description',
- *    icon: 'nb-home',
+ *    icon: 'home',
  *    responsive: true, // hide title before `route-tabs-icon-only-max-width` value
  *  },
  *  {
@@ -33,7 +33,7 @@ import { convertToBoolProperty } from '../helpers';
  * ```ts
  * @NgModule({
  *   imports: [
- *   	// ...
+ *     // ...
  *     NbRouteTabsetModule,
  *   ],
  * })
@@ -44,18 +44,38 @@ import { convertToBoolProperty } from '../helpers';
  *
  * @styles
  *
- * route-tabs-font-family:
- * route-tabs-font-size:
- * route-tabs-active-bg:
- * route-tabs-active-font-weight:
- * route-tabs-padding:
- * route-tabs-header-bg:
- * route-tabs-separator:
- * route-tabs-fg:
- * route-tabs-fg-heading:
- * route-tabs-bg:
- * route-tabs-selected:
- * route-tabs-icon-only-max-width:
+ * route-tabset-background-color:
+ * route-tabset-border-radius:
+ * route-tabset-shadow:
+ * route-tabset-tab-background-color:
+ * route-tabset-tab-padding:
+ * route-tabset-tab-text-color:
+ * route-tabset-tab-text-font-family:
+ * route-tabset-tab-text-font-size:
+ * route-tabset-tab-text-font-weight:
+ * route-tabset-tab-text-line-height:
+ * route-tabset-tab-text-transform:
+ * route-tabset-tab-underline-width:
+ * route-tabset-tab-underline-color:
+ * route-tabset-tab-active-background-color:
+ * route-tabset-tab-active-text-color:
+ * route-tabset-tab-active-underline-color:
+ * route-tabset-tab-focus-background-color:
+ * route-tabset-tab-focus-text-color:
+ * route-tabset-tab-focus-underline-color:
+ * route-tabset-tab-hover-background-color:
+ * route-tabset-tab-hover-text-color:
+ * route-tabset-tab-hover-underline-color:
+ * route-tabset-tab-disabled-background-color:
+ * route-tabset-tab-disabled-text-color:
+ * route-tabset-tab-disabled-underline-color:
+ * route-tabset-divider-color:
+ * route-tabset-divider-style:
+ * route-tabset-divider-width:
+ * route-tabset-scrollbar-color:
+ * route-tabset-scrollbar-background-color:
+ * route-tabset-scrollbar-width:
+ * route-tabset-tab-text-hide-breakpoint:
  */
 @Component({
   selector: 'nb-route-tabset',
@@ -67,9 +87,9 @@ import { convertToBoolProperty } from '../helpers';
             [class.responsive]="tab.responsive"
             class="route-tab disabled"
             tabindex="-1">
-          <a tabindex="-1">
-            <i *ngIf="tab.icon" [class]="tab.icon"></i>
-            <span *ngIf="tab.title">{{ tab.title }}</span>
+          <a tabindex="-1" class="tab-link">
+            <nb-icon *ngIf="tab.icon" [config]="tab.icon"></nb-icon>
+            <span *ngIf="tab.title" class="tab-text">{{ tab.title }}</span>
           </a>
         </li>
 
@@ -81,9 +101,9 @@ import { convertToBoolProperty } from '../helpers';
               [class.responsive]="tab.responsive"
               tabindex="0"
               class="route-tab">
-            <a tabindex="-1">
-              <i *ngIf="tab.icon" [class]="tab.icon"></i>
-              <span *ngIf="tab.title">{{ tab.title }}</span>
+            <a tabindex="-1" class="tab-link">
+              <nb-icon *ngIf="tab.icon" [icon]="tab.icon"></nb-icon>
+              <span *ngIf="tab.title" class="tab-text">{{ tab.title }}</span>
             </a>
           </li>
         </ng-template>

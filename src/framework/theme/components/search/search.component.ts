@@ -27,7 +27,8 @@ import { filter, delay, takeWhile } from 'rxjs/operators';
 
 import { NbSearchService } from './search.service';
 import { NbThemeService } from '../../services/theme.service';
-import { NbOverlayService, NbOverlayRef, NbPortalDirective  } from '../cdk';
+import { NbOverlayService } from '../cdk/overlay/overlay-service';
+import { NbOverlayRef, NbPortalDirective } from '../cdk/overlay/mapping';
 
 /**
  * search-field-component is used under the hood by nb-search component
@@ -47,8 +48,8 @@ import { NbOverlayService, NbOverlayRef, NbPortalDirective  } from '../cdk';
   ],
   template: `
     <div class="search" (keyup.esc)="emitClose()">
-      <button (click)="emitClose()">
-        <i class="nb-close-circled"></i>
+      <button (click)="emitClose()" nbButton ghost class="close-button">
+        <nb-icon icon="close-outline" pack="nebular-essentials"></nb-icon>
       </button>
       <div class="form-wrapper">
         <form class="form" (keyup.enter)="submitSearch(searchInput.value)">
@@ -86,7 +87,7 @@ export class NbSearchFieldComponent implements OnChanges, AfterViewInit {
   @Output() search = new EventEmitter();
   @Output() searchInput = new EventEmitter();
 
-  @ViewChild('searchInput') inputElement: ElementRef<HTMLInputElement>;
+  @ViewChild('searchInput', { static: false }) inputElement: ElementRef<HTMLInputElement>;
 
   @HostBinding('class.show')
   get showClass() {
@@ -162,6 +163,9 @@ export class NbSearchFieldComponent implements OnChanges, AfterViewInit {
   }
 }
 
+export type NbSearchType = 'modal-zoomin' | 'rotate-layout' | 'modal-move' |
+  'curtain' | 'column-curtain' | 'modal-drop' | 'modal-half';
+
 /**
  * Beautiful full-page search control.
  *
@@ -178,7 +182,7 @@ export class NbSearchFieldComponent implements OnChanges, AfterViewInit {
  * ```ts
  * @NgModule({
  *   imports: [
- *   	// ...
+ *     // ...
  *     NbSearchModule,
  *   ],
  * })
@@ -195,22 +199,30 @@ export class NbSearchFieldComponent implements OnChanges, AfterViewInit {
  *
  * @styles
  *
- * search-btn-open-fg:
- * search-btn-close-fg:
- * search-bg:
- * search-bg-secondary:
- * search-text:
- * search-info:
- * search-dash:
- * search-placeholder:
+ * search-background-color:
+ * search-divider-color:
+ * search-divider-style:
+ * search-divider-width:
+ * search-extra-background-color:
+ * search-text-color:
+ * search-text-font-family:
+ * search-text-font-size:
+ * search-text-font-weight:
+ * search-text-line-height:
+ * search-placeholder-text-color:
+ * search-info-text-color:
+ * search-info-text-font-family:
+ * search-info-text-font-size:
+ * search-info-text-font-weight:
+ * search-info-text-line-height:
  */
 @Component({
   selector: 'nb-search',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['styles/search.component.scss'],
   template: `
-    <button #searchButton class="start-search" (click)="emitActivate()">
-      <i class="nb-search"></i>
+    <button #searchButton class="start-search" (click)="emitActivate()" nbButton ghost>
+      <nb-icon icon="search-outline" pack="nebular-essentials"></nb-icon>
     </button>
     <nb-search-field
       *nbPortal
@@ -256,10 +268,10 @@ export class NbSearchComponent implements OnInit, OnDestroy {
    * modal-zoomin, rotate-layout, modal-move, curtain, column-curtain, modal-drop, modal-half
    * @type {string}
    */
-  @Input() type: string;
+  @Input() type: NbSearchType;
 
-  @ViewChild(NbPortalDirective) searchFieldPortal: NbPortalDirective;
-  @ViewChild('searchButton') searchButton: ElementRef<HTMLElement>;
+  @ViewChild(NbPortalDirective, { static: false }) searchFieldPortal: NbPortalDirective;
+  @ViewChild('searchButton', { read: ElementRef, static: false }) searchButton: ElementRef<HTMLElement>;
 
   constructor(
     private searchService: NbSearchService,

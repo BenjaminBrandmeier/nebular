@@ -17,6 +17,7 @@ import { LayoutDirectionToggleComponent } from './layout-direction-toggle/layout
 import { LayoutThemeToggleComponent } from './layout-theme-toggle/layout-theme-toggle.component';
 import { ComponentsOverlayComponent } from './components-list/components-overlay.component';
 import { ComponentsListComponent} from './components-list/components-list.component';
+import { NbEvaIconsModule } from '@nebular/eva-icons';
 
 @NgModule({
   imports: [
@@ -27,10 +28,11 @@ import { ComponentsListComponent} from './components-list/components-list.compon
     RouterModule.forRoot([
       {
         path: '',
-        loadChildren: '../playground/playground.module#PlaygroundModule',
+        loadChildren: () => import('../playground/playground.module').then(m => m.PlaygroundModule),
       },
     ], { useHash: true }),
     NbThemeModule.forRoot(),
+    NbEvaIconsModule,
   ],
   declarations: [
     AppComponent,

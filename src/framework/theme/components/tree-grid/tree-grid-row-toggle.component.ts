@@ -14,7 +14,10 @@ import { NbTreeGridCellDirective } from './tree-grid-cell.component';
   selector: 'nb-tree-grid-row-toggle',
   template: `
     <button class="row-toggle-button" [attr.aria-label]="expanded ? 'collapse' : 'expand'">
-      <span class="icon" [class.nb-arrow-right]="!expanded" [class.nb-arrow-down]="expanded" aria-hidden="true"></span>
+      <nb-icon [icon]="expanded ? 'chevron-down-outline' : 'chevron-right-outline'"
+               pack="nebular-essentials"
+               aria-hidden="true">
+      </nb-icon>
     </button>
   `,
   styles: [`
@@ -36,7 +39,7 @@ export class NbTreeGridRowToggleComponent {
   }
 
   @HostListener('click', ['$event'])
-  toggleRow($event: Event) {
+  toggleRow($event) {
     this.cell.toggleRow();
     $event.stopPropagation();
   }

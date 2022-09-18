@@ -6,18 +6,17 @@
 
 import { ComponentFactoryResolver, Inject, Injectable, Injector, TemplateRef, Type } from '@angular/core';
 import { fromEvent as observableFromEvent } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import {
   NbComponentPortal,
-  NbGlobalPositionStrategy,
   NbOverlayRef,
-  NbOverlayService,
   NbPortalInjector,
-  NbPositionBuilderService,
   NbScrollStrategy,
   NbTemplatePortal,
-} from '../cdk';
+} from '../cdk/overlay/mapping';
+import { NbGlobalPositionStrategy, NbPositionBuilderService } from '../cdk/overlay/overlay-position';
+import { NbOverlayService } from '../cdk/overlay/overlay-service';
 import { NB_DOCUMENT } from '../../theme.options';
 import { NB_DIALOG_CONFIG, NbDialogConfig } from './dialog-config';
 import { NbDialogRef } from './dialog-ref';
@@ -38,7 +37,7 @@ import { NbDialogContainerComponent } from './dialog-container';
  * ```ts
  * @NgModule({
  *   imports: [
- *   	// ...
+ *     // ...
  *     NbDialogModule.forRoot(config),
  *   ],
  * })
@@ -49,7 +48,7 @@ import { NbDialogContainerComponent } from './dialog-container';
  * ```ts
  * @NgModule({
  *   imports: [
- *   	// ...
+ *     // ...
  *     NbDialogModule.forChild(config),
  *   ],
  * })
@@ -172,6 +171,7 @@ export class NbDialogService {
       scrollStrategy,
       hasBackdrop: config.hasBackdrop,
       backdropClass: config.backdropClass,
+      panelClass: config.dialogClass,
     });
   }
 
@@ -243,7 +243,10 @@ export class NbDialogService {
 
     if (config.closeOnEsc) {
       observableFromEvent(this.document, 'keyup')
-        .pipe(filter((event: KeyboardEvent) => event.keyCode === 27))
+        .pipe(
+          filter((event: KeyboardEvent) => event.keyCode === 27),
+          takeUntil(dialogRef.onClose),
+        )
         .subscribe(() => dialogRef.close());
     }
   }

@@ -9,6 +9,7 @@ import {
   ComponentRef,
   Directive,
   ElementRef,
+  HostBinding,
   Input,
   OnChanges,
   OnDestroy,
@@ -16,16 +17,11 @@ import {
 } from '@angular/core';
 import { filter, takeWhile } from 'rxjs/operators';
 
-import {
-  NbAdjustableConnectedPositionStrategy,
-  NbAdjustment,
-  NbDynamicOverlay,
-  NbDynamicOverlayController,
-  NbDynamicOverlayHandler,
-  NbOverlayRef,
-  NbPosition,
-  NbTrigger,
-} from '../cdk';
+import { NbDynamicOverlay, NbDynamicOverlayController } from '../cdk/overlay/dynamic/dynamic-overlay';
+import { NbDynamicOverlayHandler } from '../cdk/overlay/dynamic/dynamic-overlay-handler';
+import { NbOverlayRef } from '../cdk/overlay/mapping';
+import { NbAdjustableConnectedPositionStrategy, NbAdjustment, NbPosition } from '../cdk/overlay/overlay-position';
+import { NbTrigger } from '../cdk/overlay/overlay-trigger';
 import { NbContextMenuComponent } from './context-menu.component';
 import { NbMenuItem, NbMenuService } from '../menu/menu.service';
 
@@ -47,12 +43,23 @@ import { NbMenuItem, NbMenuService } from '../menu/menu.service';
  * ```ts
  * @NgModule({
  *   imports: [
- *   	// ...
+ *     // ...
  *     NbContextMenuModule,
  *   ],
  * })
  * export class PageModule { }
  * ```
+ * Also make sure `NbMenuModule` is imported to your `app.module`.
+ * ```ts
+ * @NgModule({
+ *   imports: [
+ *     // ...
+ *     NbMenuModule.forRoot(),
+ *   ],
+ * })
+ * export class AppModule { }
+ * ```
+ *
  * ### Usage
  *
  * If you want to handle context menu clicks you have to pass `nbContextMenuTag`
@@ -110,6 +117,9 @@ import { NbMenuItem, NbMenuService } from '../menu/menu.service';
 })
 export class NbContextMenuDirective implements NbDynamicOverlayController, OnChanges, AfterViewInit, OnDestroy, OnInit {
 
+  @HostBinding('class.context-menu-host')
+  contextMenuHost = true;
+
   /**
    * Position will be calculated relatively host element based on the position.
    * Can be top, right, bottom and left.
@@ -146,6 +156,9 @@ export class NbContextMenuDirective implements NbDynamicOverlayController, OnCha
    * */
   @Input('nbContextMenuTrigger')
   trigger: NbTrigger = NbTrigger.CLICK;
+
+  @Input('nbContextMenuClass')
+  contextMenuClass: string = '';
 
   protected ref: NbOverlayRef;
   protected container: ComponentRef<any>;
@@ -206,7 +219,8 @@ export class NbContextMenuDirective implements NbDynamicOverlayController, OnCha
         position: this.position,
         items: this._items,
         tag: this.tag,
-      });
+      })
+      .overlayConfig({panelClass: this.contextMenuClass});
   }
 
   /*

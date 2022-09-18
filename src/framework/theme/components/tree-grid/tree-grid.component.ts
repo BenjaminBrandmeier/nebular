@@ -23,9 +23,9 @@ import { fromEvent, merge } from 'rxjs';
 import { debounceTime, takeWhile } from 'rxjs/operators';
 
 import { NB_DOCUMENT, NB_WINDOW } from '../../theme.options';
-import { NbPlatform } from '../cdk/platform';
-import { NbDirectionality } from '../cdk/bidi';
-import { NB_TABLE_TEMPLATE, NbTable } from '../cdk/table';
+import { NbPlatform } from '../cdk/platform/platform-service';
+import { NbDirectionality } from '../cdk/bidi/bidi-service';
+import { NB_TABLE_TEMPLATE, NbTable } from '../cdk/table/table.module';
 import { NbTreeGridDataSource, NbTreeGridDataSourceBuilder } from './data-source/tree-grid-data-source';
 import { NB_DEFAULT_ROW_LEVEL, NbTreeGridPresentationNode } from './data-source/tree-grid.model';
 import { NbToggleOptions } from './data-source/tree-grid.service';
@@ -98,22 +98,34 @@ import { NbColumnsService } from './tree-grid-columns.service';
  *
  * @styles
  *
- * tree-grid-cell-border-width
- * tree-grid-cell-border-style
- * tree-grid-cell-border-color
- * tree-grid-row-min-height
- * tree-grid-cell-padding
- * tree-grid-sort-header-button-background
- * tree-grid-sort-header-button-border
- * tree-grid-sort-header-button-padding
- * tree-grid-sort-header-button-font-weight
- * tree-grid-header-bg
- * tree-grid-footer-bg
- * tree-grid-row-bg
- * tree-grid-row-bg-even
- * tree-grid-row-hover-bg
- * tree-grid-sort-header-button-color
- * tree-grid-icon-color
+ * tree-grid-cell-border-width:
+ * tree-grid-cell-border-style:
+ * tree-grid-cell-border-color:
+ * tree-grid-row-min-height:
+ * tree-grid-cell-padding:
+ * tree-grid-header-background-color:
+ * tree-grid-header-text-color:
+ * tree-grid-header-text-font-family:
+ * tree-grid-header-text-font-size:
+ * tree-grid-header-text-font-weight:
+ * tree-grid-header-text-line-height:
+ * tree-grid-footer-background-color:
+ * tree-grid-footer-text-color:
+ * tree-grid-footer-text-font-family:
+ * tree-grid-footer-text-font-size:
+ * tree-grid-footer-text-font-weight:
+ * tree-grid-footer-text-line-height:
+ * tree-grid-row-background-color:
+ * tree-grid-row-even-background-color:
+ * tree-grid-row-hover-background-color:
+ * tree-grid-row-text-color:
+ * tree-grid-row-text-font-family:
+ * tree-grid-row-text-font-size:
+ * tree-grid-row-text-font-weight:
+ * tree-grid-row-text-line-height:
+ * tree-grid-sort-header-button-background-color:
+ * tree-grid-sort-header-button-border:
+ * tree-grid-sort-header-button-padding:
  */
 @Component({
   selector: 'table[nbTreeGrid]',

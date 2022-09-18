@@ -19,7 +19,7 @@ import {
 } from '@angular/core';
 
 import { convertToBoolProperty } from '../helpers';
-import { NB_SORT_HEADER_COLUMN_DEF } from '../cdk/table';
+import { NB_SORT_HEADER_COLUMN_DEF } from '../cdk/table/cell';
 
 /** Column definition associated with a `NbSortHeaderDirective`. */
 interface NbSortHeaderColumnDef {
@@ -82,11 +82,8 @@ export class NbSortHeaderIconDirective {}
   selector: 'nb-sort-icon',
   template: `
     <ng-container *ngIf="isDirectionSet()">
-      <i [class.nb-arrow-down]="isAscending()"
-         [class.nb-arrow-up]="isDescending()"
-         class="icon"
-         aria-hidden="true">
-      </i>
+      <nb-icon *ngIf="isAscending()" icon="chevron-down-outline" pack="nebular-essentials" aria-hidden="true"></nb-icon>
+      <nb-icon *ngIf="isDescending()" icon="chevron-up-outline" pack="nebular-essentials" aria-hidden="true"></nb-icon>
     </ng-container>
   `,
 })
@@ -126,7 +123,7 @@ export class NbSortIconComponent {
 })
 export class NbSortHeaderComponent {
 
-  @ContentChild(NbSortHeaderIconDirective, { read: TemplateRef })
+  @ContentChild(NbSortHeaderIconDirective, { read: TemplateRef, static: false })
   sortIcon: TemplateRef<NbSortHeaderIconDirectiveContext>;
 
   /**
